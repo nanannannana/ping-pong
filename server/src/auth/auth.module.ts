@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { KakaoStrategy } from './kakao.strategy';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { KakaoStrategy } from './kakao.strategy';
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     PassportModule.register({ defaultStrategy: 'kakao' }),
+    HttpModule,
   ],
   providers: [AuthService, UserRepository, KakaoStrategy, JwtStrategy],
   controllers: [AuthController],

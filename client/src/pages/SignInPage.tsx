@@ -1,5 +1,5 @@
 import { Button, Form, Input } from "antd";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -18,31 +18,25 @@ interface Login {
 
 export default function SignInPage() {
   const navigate = useNavigate();
-
-  const onFinish = (values: Login) => {
-    fetch(`http://${process.env.REACT_APP_SERVER_URI}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.statusCode === 401) {
-          alert("이메일 혹은 비밀번호를 다시 입력하세요.");
-        } else if (data.statusCode === 400) {
-          alert("이메일을 올바르게 작성해주세요.");
-        } else {
-          sessionStorage.setItem("nickname", data.nickname);
-          navigate("/room");
-        }
-      })
-      .catch((err) => console.error(err));
-  };
-
   const kakaoLogin = () => {
     window.location.href = `http://${process.env.REACT_APP_SERVER_URI}/auth/kakao`;
+  };
+
+  const kakaoLogout = async () => {
+    await fetch(`https://kapi.kakao.com/v1/user/unlink`, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }).then((res) => {
+      if (res.status === 200) {
+        localStorage.clear();
+        alert("로그아웃 완료");
+        navigate("/");
+      } else {
+        alert("카카오 로그아웃 실패!");
+      }
+    });
   };
 
   return (
@@ -50,42 +44,21 @@ export default function SignInPage() {
       <div
         style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "30px" }}
       >
-        Login
+        {localStorage.getItem("token") ? "Logout" : "Login"}
       </div>
-      <Form
-        name="basic"
-        style={{ width: 400 }}
-        onFinish={onFinish}
-        autoComplete="off"
-      >
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: "Please input your Email!" }]}
-        >
-          <Input />
-        </Form.Item>
 
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: "Please input your Password!" }]}
-        >
-          <Input.Password />
-        </Form.Item>
-
+      {localStorage.getItem("token") ? (
+        <Button color="warning" onClick={kakaoLogout}>
+          카카오 로그아웃
+        </Button>
+      ) : (
         <img
-          src="./kakao_img.png"
+          src="./kakao_login.png"
           style={{ float: "right", height: "32.5px" }}
+          alt="kakao_login"
           onClick={kakaoLogin}
         />
-
-        <Form.Item style={{ float: "right", marginRight: "10px" }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+      )}
     </LoginBox>
   );
 }

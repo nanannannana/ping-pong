@@ -6,7 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { Model } from 'mongoose';
-import { RegisterDto } from './dto/user.dto';
+import { UserDto } from './dto/user.dto';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
@@ -14,8 +14,8 @@ export class UserRepository {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   // 회원 등록
-  async createUser(registerDto: RegisterDto): Promise<{ message: string }> {
-    const { email, password, nickname } = registerDto;
+  async createUser(userDto: UserDto): Promise<{ message: string }> {
+    const { email, password, nickname } = userDto;
 
     // 비밀번호 암호화
     const salt = await bcrypt.genSalt();

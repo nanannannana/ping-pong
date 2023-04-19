@@ -1,9 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   // cors 설정
   app.enableCors({
@@ -17,7 +19,7 @@ async function bootstrap() {
   // session 설정
   app.use(
     session({
-      secret: process.env.SESSION_SECRET,
+      secret: configService.get<string>('SESSION_SECRET'),
       resave: false,
       saveUninitialized: false,
     }),

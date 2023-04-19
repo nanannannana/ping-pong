@@ -27,9 +27,11 @@ export default function NavBar() {
         <Menu.Item key="Mypage" style={{ lineHeight: "5" }}>
           <Link to="/mypage">Mypage</Link>
         </Menu.Item>
-        <Menu.Item key="login" style={{ lineHeight: "5" }}>
-          <Link to="/login">Login</Link>
-        </Menu.Item>
+        {localStorage.getItem("token") && (
+          <Menu.Item key="logout" style={{ lineHeight: "5" }}>
+            <Link to="/login">Logout</Link>
+          </Menu.Item>
+        )}
       </Menu>
     </nav>
   );
