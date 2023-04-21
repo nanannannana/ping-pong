@@ -5,8 +5,5 @@ export class UserDto {
   email: string;
 
   @IsString()
-  password: string;
-
-  @IsString()
   nickname: string;
 }

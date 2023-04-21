@@ -18,12 +18,12 @@ export default function NavBar() {
         <Logo src="./chat.png" />
       </a>
       <Menu className="custom-menu" mode="horizontal">
-        <Menu.Item key="home" style={{ lineHeight: "5" }}>
-          <Link to="/room">Home</Link>
-        </Menu.Item>
         <Menu.Item key="chat" style={{ lineHeight: "5" }}>
-          <Link to="/chat">Chat</Link>
+          <Link to="/room">Chat</Link>
         </Menu.Item>
+        {/* <Menu.Item key="chat" style={{ lineHeight: "5" }}>
+          <Link to="/chat">Chat</Link>
+        </Menu.Item> */}
         <Menu.Item key="Mypage" style={{ lineHeight: "5" }}>
           <Link to="/mypage">Mypage</Link>
         </Menu.Item>

@@ -1,10 +1,12 @@
-import { Card, Input } from "antd";
-import React, { useEffect } from "react";
+import { Input } from "antd";
+import { useEffect } from "react";
 import styled from "styled-components";
 import "../components/RoomPage.css";
-import { useDispatch, useSelector } from "react-redux";
-import { io } from "socket.io-client";
 import { socket } from "../utils/socket";
+import { useNavigate } from "react-router-dom";
+import Room from "../components/Room";
+import { useDispatch } from "react-redux";
+import { setRoom } from "../store/chat";
 
 const RoomBox = styled.div`
   max-width: 1280px;
@@ -12,38 +14,37 @@ const RoomBox = styled.div`
 `;
 
 export default function RoomPage() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   useEffect(() => {
     socket.connect();
-    socket.emit("events", "hello");
-  }, []);
+    socket.on("joined", (room) => {
+      navigate(`/chat/${room.roomInfo.roomName}`, {
+        state: { roomID: room.roomInfo._id },
+      });
+      sessionStorage.setItem("isNew", room.isNew);
+    });
+  }, [socket]);
 
+  // room 생성
   const onSearchRoom = (roomName: string) => {
-    socket.emit("join", roomName);
+    socket.emit("join", {
+      roomName,
+      userNo: localStorage.getItem("Id"),
+      nickName: localStorage.getItem("nickname"),
+    });
   };
 
   return (
     <RoomBox>
       <Input.Search
-        placeholder="input search text"
+        placeholder="방을 검색 & 생성해보세요!"
         onSearch={onSearchRoom}
         style={{ width: 450, display: "block", margin: "auto" }}
       />
-      <Card
-        className="chatRoom"
-        title="Default size card"
-        extra={<a href="#">More</a>}
-        style={{ width: 450, margin: "10px auto" }}
-      >
-        <div>Card content</div>
-      </Card>
-      <Card
-        className="chatRoom"
-        title="Default size card"
-        extra={<a href="#">More</a>}
-        style={{ width: 450, margin: "10px auto" }}
-      >
-        <div>Card content</div>
-      </Card>
+      <Room />
+      <Room />
     </RoomBox>
   );
 }

@@ -34,10 +34,37 @@ export class AuthController {
   @Get('kakao/callback')
   @UseGuards(AuthGuard('kakao'))
   kakaoLoginCallback(@Req() req, @Res() res): void {
+    req.session.accessToken = req.user.accessToken;
     res.redirect(
-      `http://${this.configService.get<string>('CLIENT_URI')}?token=${
-        req.user.accessToken
-      }`,
+      `http://${this.configService.get<string>('CLIENT_URI')}/?user-no=${
+        req.user.userNo
+      }&nickname=${req.user.nickname}`,
     );
+  }
+
+  @Get('/unlink')
+  async KakaoLogout(@Req() req, @Res() res) {
+    await this.httpService.post(`https://kapi.kakao.com/v1/user/unlink`, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${req.session.accessToken}`,
+      },
+    });
+    // .then((response) => {
+    //   if (response.status === 200 || response.status === 401) {
+    //     req.session.destory();
+    //     // res.redirect(
+    //     //   `http://${this.configService.get<string>(
+    //     //     'CLIENT_URI',
+    //     //   )}/?logout=success`,
+    //     // );
+    //   } else {
+    //     // res.redirect(
+    //     //   `http://${this.configService.get<string>(
+    //     //     'CLIENT_URI',
+    //     //   )}/?logout=failed`,
+    //     // );
+    //   }
+    // });
   }
 }

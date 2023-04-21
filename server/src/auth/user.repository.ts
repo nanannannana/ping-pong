@@ -7,28 +7,21 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { Model } from 'mongoose';
 import { UserDto } from './dto/user.dto';
-import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserRepository {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   // 회원 등록
-  async createUser(userDto: UserDto): Promise<{ message: string }> {
-    const { email, password, nickname } = userDto;
-
-    // 비밀번호 암호화
-    const salt = await bcrypt.genSalt();
-    const hashedPW = await bcrypt.hash(password, salt);
+  async createUser(userDto: UserDto): Promise<User> {
+    const { email, nickname } = userDto;
 
     // 회원가입 성공 시, signup success return
     try {
-      await this.userModel.create({
+      return await this.userModel.create({
         email,
-        password: hashedPW,
         nickname,
       });
-      return { message: 'signup success' };
     } catch (err) {
       if (err.code === 11000) {
         throw new ConflictException('Duplicate Email value');

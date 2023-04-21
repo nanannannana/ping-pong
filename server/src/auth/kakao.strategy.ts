@@ -21,13 +21,16 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     });
 
     if (!user) {
-      await this.userRepository.createUser({
+      const createdUser: User = await this.userRepository.createUser({
         email: profile._json.kakao_account.email,
-        password: String(profile.id),
         nickname: profile.displayName,
       });
-      return { accessToken, nickname: profile.displayName };
+      return {
+        accessToken,
+        nickname: profile.displayName,
+        userNo: createdUser._id,
+      };
     }
-    return { accessToken, nickname: profile.displayName };
+    return { accessToken, nickname: profile.displayName, userNo: user._id };
   }
 }
