@@ -1,5 +1,4 @@
-import { Button, Form, Input } from "antd";
-import React, { useEffect, useState } from "react";
+import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Kakao_Logout from "../services/KakaoLogout";

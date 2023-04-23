@@ -8,6 +8,7 @@ const Myfooter = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 1rem;
+  border-top: 1px solid #f0f0f0;
 `;
 
 export default function Footer() {

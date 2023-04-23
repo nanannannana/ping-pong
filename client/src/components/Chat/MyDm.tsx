@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { IDm } from "../Interfaces";
 
 const MyName = styled.div`
   float: right;
@@ -17,13 +18,7 @@ const MyChat = styled.div`
   padding: 7px;
 `;
 
-export default function MyDm({
-  text,
-  nickname,
-}: {
-  text: string;
-  nickname: string;
-}) {
+export default function MyDm({ text, nickname }: IDm) {
   return (
     <>
       <MyName>{nickname}</MyName>

@@ -10,7 +10,6 @@ const initState = {
 const SETROOM = "chat/SETROOMID";
 const SETCHATTING = "chat/SETCHATTING";
 const ADDCHCT = "chat/ADDCHAT";
-const NEW_TO_EXISTING = "chat/NEW_TO_EXISTING";
 
 export const setRoom = (room: { roomID: string; isNew: boolean }) => ({
   type: SETROOM,
@@ -21,10 +20,6 @@ export const setChatting = (chat: prevChat) => ({
   payload: chat,
 });
 export const addChat = (chat: IChat) => ({ type: ADDCHCT, payload: chat });
-export const newToExisting = (isNew: boolean) => ({
-  type: NEW_TO_EXISTING,
-  payload: isNew,
-});
 
 export default function chat(
   state = initState,
@@ -46,11 +41,6 @@ export default function chat(
       return {
         ...state,
         chatting: state.chatting.concat(action.payload),
-      };
-    case NEW_TO_EXISTING:
-      return {
-        ...state,
-        isNew: action.payload,
       };
     default:
       return state;

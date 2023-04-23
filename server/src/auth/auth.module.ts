@@ -10,11 +10,19 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { KakaoStrategy } from './kakao.strategy';
 import { HttpModule } from '@nestjs/axios';
+import { ChatModule } from 'src/chat/chat.module';
+import { Chat, ChatSchema } from 'src/chat/chat.schema';
+import { Room, RoomSchema } from 'src/chat/room.schema';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Chat.name, schema: ChatSchema },
+      { name: Room.name, schema: RoomSchema },
+    ]),
+
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({

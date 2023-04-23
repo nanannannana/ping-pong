@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import { Button } from "antd";
 import styled from "styled-components";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addNickname } from "../store/user";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Kakao_Logout from "../services/KakaoLogout";
 
 const LandingBox = styled.div`
@@ -22,7 +20,6 @@ const Text = styled.div`
 
 export default function LandingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const kakaoLogin = () => {
@@ -31,21 +28,33 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (searchParams.get("user-no")) {
-      // localStorage.setItem("token", searchParams.get("token") as string);
       localStorage.setItem("Id", searchParams.get("user-no") as string);
       localStorage.setItem("nickname", searchParams.get("nickname") as string);
       navigate("/room");
+    } else if (searchParams.get("unlink")) {
+      if (searchParams.get("unlink") === "success") {
+        localStorage.clear();
+        sessionStorage.clear();
+        alert("회원 탈퇴가 완료되었습니다. 이용해주셔서 감사합니다.");
+        navigate("/");
+      } else {
+        alert("탈퇴 처리 중 오류가 발생했습니다. 다시 시도해 주세요.");
+        navigate("/");
+      }
     }
   }, []);
 
   const kakaoLogout = async () => {
     window.location.href = Kakao_Logout;
+    fetch(`http://${process.env.REACT_APP_SERVER_URI}/auth/logout`, {
+      method: "GET",
+    });
     localStorage.clear();
   };
 
   return (
     <LandingBox>
-      <Text>GET Start PING-PONG!</Text>
+      <Text>GET START PING-PONG!</Text>
       <div>
         {localStorage.getItem("Id") ? (
           <Button color="warning" onClick={kakaoLogout}>

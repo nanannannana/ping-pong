@@ -6,4 +6,8 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(private userRepository: UserRepository) {}
+
+  async userDelete({ userID }) {
+    return await this.userRepository.delUser({ userID });
+  }
 }

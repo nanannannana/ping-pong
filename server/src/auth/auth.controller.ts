@@ -35,6 +35,7 @@ export class AuthController {
   @UseGuards(AuthGuard('kakao'))
   kakaoLoginCallback(@Req() req, @Res() res): void {
     req.session.accessToken = req.user.accessToken;
+    req.session.userID = req.user.userNo;
     res.redirect(
       `http://${this.configService.get<string>('CLIENT_URI')}/?user-no=${
         req.user.userNo
@@ -42,29 +43,40 @@ export class AuthController {
     );
   }
 
+  @Get('logout')
+  userLogout(@Req() req, @Res() res): void {
+    // req.logout();
+    req.session.destroy(() => {
+      res.clearCookie('connect.sid');
+      res.redirect('/');
+    });
+  }
+
   @Get('/unlink')
   async KakaoLogout(@Req() req, @Res() res) {
-    await this.httpService.post(`https://kapi.kakao.com/v1/user/unlink`, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Bearer ${req.session.accessToken}`,
-      },
-    });
-    // .then((response) => {
-    //   if (response.status === 200 || response.status === 401) {
-    //     req.session.destory();
-    //     // res.redirect(
-    //     //   `http://${this.configService.get<string>(
-    //     //     'CLIENT_URI',
-    //     //   )}/?logout=success`,
-    //     // );
-    //   } else {
-    //     // res.redirect(
-    //     //   `http://${this.configService.get<string>(
-    //     //     'CLIENT_URI',
-    //     //   )}/?logout=failed`,
-    //     // );
-    //   }
-    // });
+    await this.httpService
+      .post(`https://kapi.kakao.com/v1/user/unlink`, null, {
+        headers: {
+          Authorization: `Bearer ${req.session.accessToken}`,
+        },
+      })
+      .toPromise()
+      .then(async (response) => {
+        if (response.status === 200 || response.status === 401) {
+          await this.authService.userDelete({ userID: req.session.userID });
+          req.session.destroy();
+          return res.redirect(
+            `http://${this.configService.get<string>(
+              'CLIENT_URI',
+            )}/?unlink=success`,
+          );
+        } else {
+          return res.redirect(
+            `http://${this.configService.get<string>(
+              'CLIENT_URI',
+            )}/?unlink=failed`,
+          );
+        }
+      });
   }
 }

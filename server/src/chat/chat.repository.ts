@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Chat } from './chat.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Room } from './room.schema';
 
 @Injectable()
@@ -11,12 +11,25 @@ export class ChatRepository {
     @InjectModel(Room.name) private RoomModel: Model<Room>,
   ) {}
 
+  async isInRoom(user) {
+    return this.RoomModel.find({ users: { $in: [user] } })
+      .select('roomName users -_id')
+      .populate({
+        path: 'users',
+        select: 'nickname',
+      })
+      .exec();
+  }
+
   async findRoom({ roomName }): Promise<Room> {
     return this.RoomModel.findOne({ roomName });
   }
   async createRoom({ roomName, userNo }): Promise<Room> {
-    console.log('roomName', roomName);
-    return this.RoomModel.create({ roomName, host: userNo, users: [userNo] });
+    return this.RoomModel.create({
+      roomName,
+      host: userNo,
+      users: [userNo],
+    });
   }
 
   async addUser({ roomName, users }) {
@@ -28,14 +41,22 @@ export class ChatRepository {
       .find({ room: roomID })
       .populate({
         path: 'user',
-        select: '_id',
+        select: '_id nickname',
       })
-      .select('message notice')
-      .sort({ createdAt: 1 })
-      .limit(30);
+      .select('message notice');
+    // .sort({ createdAt: -1 })
+    // .limit(30);
   }
 
   async addChat({ message, user, room, notice }) {
     return await this.chatModel.create({ message, user, room, notice });
+  }
+
+  async deleteRoom({ roomName, host }) {
+    return this.RoomModel.deleteOne({ roomName, host });
+  }
+
+  async updateRoom({ roomName, userNo }) {
+    return this.RoomModel.updateOne({ roomName }, { $pull: { users: userNo } });
   }
 }

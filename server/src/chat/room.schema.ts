@@ -15,7 +15,10 @@ export class Room {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   host: User;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    index: true,
+  })
   users: User[];
 }
 
