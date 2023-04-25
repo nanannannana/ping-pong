@@ -10,7 +10,7 @@ import { ChatRepository } from './chat.repository';
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:3000'],
+    origin: [`http://${process.env.CLIENT_URI}`],
   },
 })
 export class SocketGateway {
@@ -123,17 +123,18 @@ export class SocketGateway {
       roomName,
       host: userNo,
     });
-    console.log('result', result);
+    // console.log('result', result);
     // 방을 나가는 사람이 host가 아닐 경우, user_list에서 해당 user 삭제
     if (result.deletedCount === 0) {
       const check = await this.chatRepository.updateRoom({ roomName, userNo });
-      console.log('check', check);
+      // console.log('check', check);
     }
     const rooms: any = await this.chatRepository.isInRoom(userNo);
     client.emit('is-in-rooms', rooms);
     rooms.forEach((v: { users: { _id: string; nickname: string } }) =>
       client.emit('members', v.users),
     );
+    client.leave(roomName.toString());
   }
 
   handleConnection(@ConnectedSocket() client: Socket) {

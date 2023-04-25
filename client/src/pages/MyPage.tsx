@@ -48,7 +48,6 @@ export default function MyPage() {
   const kakaoUnlink = () => {
     window.location.href = `http://${process.env.REACT_APP_SERVER_URI}/auth/unlink`;
   };
-
   useEffect(() => {
     socket.emit("find-rooms", localStorage.getItem("Id"));
     socket.on("is-in-rooms", (rooms) => setRooms(rooms));

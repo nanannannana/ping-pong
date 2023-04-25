@@ -65,6 +65,10 @@ export default function ChattingPage() {
     });
     // 새로운 챗 화면에 그림
     socket.on("new-chat", (chat) => dispatch(addChat(chat)));
+
+    return () => {
+      socket.disconnect();
+    };
   }, [socket]);
 
   useEffect(() => {

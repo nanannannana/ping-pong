@@ -13,19 +13,21 @@ const Logo = styled.img`
 `;
 
 export default function NavBar() {
+  const goToChat = () => (window.location.href = "/room");
+
   return (
     <nav style={{ position: "fixed", zIndex: 1, width: "100%" }}>
-      <a href="/">
+      <Link to="/">
         <Logo src={logoImage} />
-      </a>
+      </Link>
       <Menu className="custom-menu" mode="horizontal">
         <Menu.Item key="chat" style={{ lineHeight: "5" }}>
-          <a href="/room">Chat</a>
+          <div onClick={() => goToChat()}>Chat</div>
         </Menu.Item>
         <Menu.Item key="Mypage" style={{ lineHeight: "5" }}>
           <Link to="/mypage">Mypage</Link>
         </Menu.Item>
-        {localStorage.getItem("token") && (
+        {localStorage.getItem("Id") && (
           <Menu.Item key="logout" style={{ lineHeight: "5" }}>
             <Link to="/login">Logout</Link>
           </Menu.Item>
