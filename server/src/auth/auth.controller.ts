@@ -37,7 +37,7 @@ export class AuthController {
     req.session.accessToken = req.user.accessToken;
     req.session.userID = req.user.userNo;
     res.redirect(
-      `http://${this.configService.get<string>('CLIENT_URI')}/?user-no=${
+      `${this.configService.get<string>('CLIENT_URI')}/?user-no=${
         req.user.userNo
       }&nickname=${req.user.nickname}`,
     );
@@ -66,15 +66,11 @@ export class AuthController {
           await this.authService.userDelete({ userID: req.session.userID });
           req.session.destroy();
           return res.redirect(
-            `http://${this.configService.get<string>(
-              'CLIENT_URI',
-            )}/?unlink=success`,
+            `${this.configService.get<string>('CLIENT_URI')}/?unlink=success`,
           );
         } else {
           return res.redirect(
-            `http://${this.configService.get<string>(
-              'CLIENT_URI',
-            )}/?unlink=failed`,
+            `${this.configService.get<string>('CLIENT_URI')}/?unlink=failed`,
           );
         }
       });

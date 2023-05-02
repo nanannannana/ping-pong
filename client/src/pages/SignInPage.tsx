@@ -14,7 +14,7 @@ const LoginBox = styled.div`
 export default function SignInPage() {
   const navigate = useNavigate();
   const kakaoLogin = () => {
-    window.location.href = `http://${process.env.REACT_APP_SERVER_URI}/auth/kakao`;
+    window.location.href = `${process.env.REACT_APP_SERVER_URI}/auth/kakao`;
     navigate("/room");
   };
 

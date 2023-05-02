@@ -10,7 +10,7 @@ import { ChatRepository } from './chat.repository';
 
 @WebSocketGateway({
   cors: {
-    origin: [`http://${process.env.CLIENT_URI}`],
+    origin: [`${process.env.CLIENT_URI}`],
   },
 })
 export class SocketGateway {

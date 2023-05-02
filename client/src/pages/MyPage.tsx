@@ -46,7 +46,7 @@ export default function MyPage() {
   const [members, setMembers] = useState([]);
 
   const kakaoUnlink = () => {
-    window.location.href = `http://${process.env.REACT_APP_SERVER_URI}/auth/unlink`;
+    window.location.href = `${process.env.REACT_APP_SERVER_URI}/auth/unlink`;
   };
   useEffect(() => {
     socket.emit("find-rooms", localStorage.getItem("Id"));

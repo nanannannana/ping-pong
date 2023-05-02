@@ -20,7 +20,7 @@ interface SignUp {
 export default function SignUpPage() {
   const navigate = useNavigate();
   const onFinish = (values: SignUp) => {
-    fetch(`http://${process.env.REACT_APP_SERVER_URI}/auth/register`, {
+    fetch(`${process.env.REACT_APP_SERVER_URI}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

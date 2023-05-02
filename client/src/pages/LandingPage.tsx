@@ -23,7 +23,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   const kakaoLogin = () => {
-    window.location.href = `http://${process.env.REACT_APP_SERVER_URI}/auth/kakao`;
+    window.location.href = `${process.env.REACT_APP_SERVER_URI}/auth/kakao`;
   };
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function LandingPage() {
 
   const kakaoLogout = async () => {
     window.location.href = Kakao_Logout;
-    fetch(`http://${process.env.REACT_APP_SERVER_URI}/auth/logout`, {
+    fetch(`${process.env.REACT_APP_SERVER_URI}/auth/logout`, {
       method: "GET",
     });
     localStorage.clear();
